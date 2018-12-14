@@ -1,0 +1,81 @@
+<div>
+    <div class="md-layout md-gutter md-alignment-center">
+        <div class="md-layout-item md-size-70">
+
+            <div>
+                <md-dialog-prompt
+                        :md-active.sync="activeAddModal"
+                        v-model="value"
+                        md-title="Add new Task"
+                        md-input-placeholder="Task Name"
+                        md-confirm-text="OK"
+                        @md-confirm="onAddNewTask(value)"/>
+
+                <md-dialog-prompt
+                        :md-active.sync="activeEditModal"
+                        v-model="value"
+                        md-title="Update Task info"
+                        md-input-placeholder="Task Name"
+                        md-confirm-text="OK"
+                        @md-confirm="onUpdateTask (value)"/>
+
+
+                <md-dialog-confirm
+                        :md-active.sync="activeDeleteModal"
+                        md-title="Are you sure Delete Item !"
+                        md-content=""
+                        md-confirm-text="OK"
+                        md-cancel-text="Cancel"
+                        @md-confirm="onConfirmDelete" />
+            </div>
+
+            <div class="md-layout md-gutter md-alignment-center">
+                <div class="md-layout-item md-size-90">
+                    <md-field md-inline>
+                        <label>Search here ...</label>
+                        <md-input v-model="word"></md-input>
+                    </md-field>
+                </div>
+                <div class="md-layout-item md-size-10">
+                    <md-button class="md-primary md-raised" @click="addModal()">ADD NEW</md-button>
+                </div>
+            </div>
+            <md-table>
+                <md-table-row>
+                    <md-table-head md-numeric>#</md-table-head>
+                    <md-table-head>Task Name</md-table-head>
+                    <md-table-head>Action</md-table-head>
+                </md-table-row>
+                <md-table-row v-if="tasks.length > 0" v-for="task in listView">
+                    <md-table-cell md-numeric>{{task.TaskID}}</md-table-cell>
+                    <md-table-cell>
+                        <md-field md-inline>
+                            <label>Edit</label>
+                            <md-input :value="task.TaskTag" @blur="inlineUpdate($event,task)"></md-input>
+                        </md-field>
+                    </md-table-cell>
+                    <md-table-cell>
+                        <md-button @click="editModal(task)">
+                            <md-icon>edit</md-icon>
+                        </md-button>
+                        <md-button @click="deleteConfirmModal(task)">
+                            <md-icon>delete</md-icon>
+                        </md-button>
+                    </md-table-cell>
+                </md-table-row>
+            </md-table>
+            <div v-if="last_page == 0">
+                No data available
+            </div>
+            <div v-if="last_page > 0">
+                <md-button class="md-raised"  v-bind:disabled="current_page - 1 <= 0" @click="changePage(current_page - 1 )">
+                    <
+                </md-button>
+                <md-button :class="current_page == n ? 'md-raised md-primary': 'md-raised'" v-for="n in last_page" @click="changePage(n)">{{ n }}</md-button>
+                <md-button class="md-raised"  v-bind:disabled="current_page == last_page " @click="changePage(current_page + 1 )">
+                    >
+                </md-button>
+            </div>
+        </div>
+    </div>
+</div>
